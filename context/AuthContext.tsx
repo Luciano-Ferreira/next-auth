@@ -1,4 +1,5 @@
 import { createContext, ReactNode } from 'react';
+import { api } from '../services/api';
 
 type AuthProviderProps = {
   children: ReactNode;
@@ -21,7 +22,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
 
   async function signIn({email, pw}: SignInCredentials) {
-    console.log({email, pw})
+      const response = await api.post('sessions', {
+        email,
+        password: pw
+      });
+      console.log(response.data)
+    
   }
 
   return (
