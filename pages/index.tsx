@@ -6,7 +6,7 @@ import styles from '../styles/Home.module.css'
 const Home: NextPage = () => {
 
   const [email, setEmail] = useState('');
-  const [pw, setPw]= useState('');
+  const [password, setPw]= useState('');
 
   const { signIn } = useContext(AuthContext);
 
@@ -15,7 +15,7 @@ const Home: NextPage = () => {
 
     const data = {
       email,
-      pw
+      password
     }
 
     await signIn(data)
@@ -24,7 +24,7 @@ const Home: NextPage = () => {
   return (
     <form onSubmit={handleSubmit} className={styles.container}>
       <input type="email" value={email} onChange={(e) => { setEmail(e.target.value) }}/>
-      <input type="password"  value={pw} onChange={(e) => { setPw(e.target.value) }}/>
+      <input type="password"  value={password} onChange={(e) => { setPw(e.target.value) }}/>
       <button type="submit">SignIn</button>
     </form>
   )
