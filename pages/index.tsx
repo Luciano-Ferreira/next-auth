@@ -1,12 +1,12 @@
-import type { NextPage } from 'next';
-import { AuthContext } from '../context/AuthContext';
-import { FormEvent, useContext, useState } from 'react'
-import styles from '../styles/Home.module.css'
+import type { NextPage } from "next";
+import { AuthContext } from "../context/AuthContext";
+import { FormEvent, useContext, useState } from "react"
+import styles from "../styles/Home.module.css"
 
 const Home: NextPage = () => {
 
-  const [email, setEmail] = useState('');
-  const [password, setPw]= useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPw]= useState("");
 
   const { signIn } = useContext(AuthContext);
 

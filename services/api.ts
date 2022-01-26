@@ -1,5 +1,5 @@
-import axios, { AxiosError } from 'axios';
-import { parseCookies, setCookie } from 'nookies';
+import axios, { AxiosError } from "axios";
+import { parseCookies, setCookie } from "nookies";
 
 
 
@@ -8,38 +8,38 @@ let isRefreshing = false;
 let failedRequestQueue: { onSuccess: (token: string) => void; onFailure: (err: AxiosError<any, any>) => void; }[] = [];
 
 export const api = axios.create({
-  baseURL: 'http://localhost:3333',
+  baseURL: "http://localhost:3333",
 })
 
-api.defaults.headers.common['Authorization'] =
-  `Bearer ${cookies['nextauth.token']}`;
+api.defaults.headers.common["Authorization"] =
+  `Bearer ${cookies["nextauth.token"]}`;
 
 api.interceptors.response.use(response => {
   return response;
 }, (error: AxiosError) => {
   if (error.response?.status === 401) {
-    if (error.response.data?.code === 'token.expired') {
+    if (error.response.data?.code === "token.expired") {
       cookies = parseCookies();
 
-      const { 'nextauth.refreshToken': refreshToken } = cookies;
+      const { "nextauth.refreshToken": refreshToken } = cookies;
       const originalConfig = error.config.headers;
 
       if (!refreshToken) {
-        api.post('/refresh', {
+        api.post("/refresh", {
           refreshToken
         }).then(response => {
           const { token } = response.data;
   
-          setCookie(undefined, 'nextauth.token', token, {
+          setCookie(undefined, "nextauth.token", token, {
             maxAge: 60 * 60 * 24 * 30,
-            path: '/'
+            path: "/"
           })
-          setCookie(undefined, 'nextauth.refreshToken', response.data.refreshToken, {
+          setCookie(undefined, "nextauth.refreshToken", response.data.refreshToken, {
             maxAge: 60 * 60 * 24 * 30,
-            path: '/'
+            path: "/"
           })
   
-          api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+          api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
           failedRequestQueue.forEach(request => request.onSuccess(token))
 
@@ -61,12 +61,12 @@ api.interceptors.response.use(response => {
               return
             }
           
-            originalConfig['Authorization'] = `Bearer ${token}`
+            originalConfig["Authorization"] = `Bearer ${token}`
           
             resolve(api(originalConfig))
           },
           onFailure: (err: AxiosError) => {
-            console.log('chegou aq no erro')
+            console.log("chegou aq no erro")
             reject(err)
           }
         })
