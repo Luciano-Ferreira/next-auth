@@ -1,8 +1,6 @@
 import axios, { AxiosError } from "axios";
 import { parseCookies, setCookie } from "nookies";
 
-
-
 let cookies = parseCookies();
 let isRefreshing = false;
 let failedRequestQueue: { onSuccess: (token: string) => void; onFailure: (err: AxiosError<any, any>) => void; }[] = [];
@@ -22,13 +20,12 @@ api.interceptors.response.use(response => {
       cookies = parseCookies();
 
       const { "nextauth.refreshToken": refreshToken } = cookies;
-      const originalConfig = error.config.headers;
-
-      if (!refreshToken) {
+      const originalConfig = error.config;
+      if (!isRefreshing) {
         api.post("/refresh", {
           refreshToken
         }).then(response => {
-          const { token } = response.data;
+          const { token } = response?.data;
   
           setCookie(undefined, "nextauth.token", token, {
             maxAge: 60 * 60 * 24 * 30,
@@ -53,7 +50,6 @@ api.interceptors.response.use(response => {
           isRefreshing = false;
         })
       }
-
       return new Promise((resolve, reject) => {
         failedRequestQueue.push({
           onSuccess: (token: string) => {
@@ -61,12 +57,11 @@ api.interceptors.response.use(response => {
               return
             }
           
-            originalConfig["Authorization"] = `Bearer ${token}`
+            originalConfig.headers["Authorization"] = `Bearer ${token}`
           
             resolve(api(originalConfig))
           },
           onFailure: (err: AxiosError) => {
-            console.log("chegou aq no erro")
             reject(err)
           }
         })
