@@ -7,14 +7,14 @@ import { withSSRAuth } from '../utils/withSSRAuth';
 
 export default function Dashboard() {
 
-  const  { user } = useContext(AuthContext)
+  const { user } = useContext(AuthContext)
 
   useEffect(() => {
     api.get("/me")
-    .then(response => console.log(response))
-    .catch(err => {
-      console.log(err)
-    })
+      .then(response => console.log(response))
+      .catch(err => {
+        console.log(err)
+      })
   }, [])
   return (
     <>{user?.email}</>
@@ -23,9 +23,9 @@ export default function Dashboard() {
 
 export const getServerSideProps = withSSRAuth(async (ctx) => {
   const apiClient = setupAPIClient(ctx);
-  const response = await apiClient.get('/me');
 
-  console.log(response.data)
+    const response = await apiClient.get('/me');
+    console.log(response.data)
 
   return {
     props: {
